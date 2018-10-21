@@ -89,6 +89,14 @@ public class TCPUtils {
 				return "T_HV=";
 			case S_FIRELASER:
 				return "FIRE";
+			case S_FIRELASER_OFF:
+ 				return "LSROFF";
+ 			case S_RESET_SHIP:
+ 				return "GG";
+ 			case S_SWEEP_PAN:
+ 				return "PAN";
+ 			case S_SWEEP_TILT:
+ 				return "TILT";
 			case S_PANSHIP_LEFT:
 				return "LFT";
 			case S_PANSHIP_RIGHT:
