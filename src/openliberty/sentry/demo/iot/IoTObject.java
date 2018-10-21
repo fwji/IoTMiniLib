@@ -1,0 +1,122 @@
+package openliberty.sentry.demo.iot;
+
+import java.io.IOException;
+import java.net.InetAddress;
+
+import openliberty.sentry.demo.iot.tcp.TCPClient;
+import openliberty.sentry.demo.iot.tcp.TCPCommand;
+import openliberty.sentry.demo.iot.tcp.TCPUtils;
+
+public class IoTObject implements IoTConnection{
+
+	private TCPClient tcpClient;
+	private InetAddress host;
+	private int port;
+	
+	public IoTObject(){
+		
+	}
+	
+	public IoTObject(InetAddress serverAddress, int serverPort){
+		host = serverAddress;
+		port = serverPort;
+	}
+	
+	public void setHost(InetAddress serverAddress, int serverPort) {
+		host = serverAddress;
+		port = serverPort;
+	}
+	
+	public String getIP() {
+		return host == null? null : host.getHostAddress();
+	}
+	
+	public int getPort() {
+		return port;
+	}
+	
+	public void connect() throws Exception{
+		if (tcpClient == null)
+			tcpClient = new TCPClient(host, port);
+	}
+	
+	public void disconnect() throws IOException {
+		if (tcpClient != null) {
+			tcpClient.close();
+			tcpClient = null;
+		}
+	}
+	public boolean ping() throws IOException {
+		if (tcpClient != null) {
+			String response = tcpClient.sendCommand("ping");
+			if (response != null && response.contains(TCPClient.TCP_OK)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean isConnected() {
+		try {
+			return ping();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			return false;
+		}
+	}
+	
+	public void sendCommand(TCPCommand c) {
+		String rawtcp = TCPUtils.convertTCPCommandToString(c);
+		try {
+			String response = tcpClient.sendCommand(rawtcp);
+			int retry = 3;
+			while (response.contains(TCPClient.TCP_NC) && retry > 0) {
+				retry--;
+				System.out.println("response is not ok, resending command " + response);
+				response = tcpClient.sendCommand(rawtcp);
+			}
+			if (retry == 0) {
+				System.out.println("Unable to send message to tcpClient due max retry reached");
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Unable to send message to tcpClient due to an error " + e.getMessage());
+		}
+		
+	}
+	
+	public void sendCommand(TCPCommand c, String args) {
+		String rawtcp = TCPUtils.convertTCPCommandToString(c);
+		try {
+			StringBuffer sb = new StringBuffer();
+			sb.append(rawtcp).append(args);
+			String responseWithArgs = sb.toString();
+			String response = tcpClient.sendCommand(responseWithArgs);
+			int retry = 3;
+			while (response.contains(TCPClient.TCP_NC) && retry > 0) {
+				retry--;
+				System.out.println("response is not ok, resending command " + responseWithArgs);
+				response = tcpClient.sendCommand(responseWithArgs);
+			}
+			if (retry == 0) {
+				System.out.println("Unable to send message to tcpClient due max retry reached");
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Unable to send message to tcpClient due to an error " + e.getMessage());
+		}
+		
+	}
+	
+	public String getData() throws IOException{
+		int retry = 2;
+		String rxData = null;
+		while ((rxData = tcpClient.getData()) == null  && retry > 0) {
+			retry--;
+		}
+        return rxData;
+	}
+
+}
