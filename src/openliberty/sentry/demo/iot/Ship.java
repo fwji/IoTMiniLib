@@ -61,6 +61,22 @@ public class Ship extends IoTObject{
 		sendCommand(TCPCommand.S_PANSHIP_DOWN);
 	}
 	
+	public void panShipLeftFast() throws Exception {
+		sendCommand(TCPCommand.S_PANSHIP_LEFT_2);
+	}
+	
+	public void panShipRightFast() throws Exception {
+		sendCommand(TCPCommand.S_PANSHIP_RIGHT_2);
+	}
+	
+	public void panShipUpFast() throws Exception {
+		sendCommand(TCPCommand.S_PANSHIP_UP_2);
+	}
+	
+	public void panShipDownFast() throws Exception {
+		sendCommand(TCPCommand.S_PANSHIP_DOWN_2);
+	}
+	
 	public void fireLaser(){
 		sendCommand(TCPCommand.S_FIRELASER);		
 	}

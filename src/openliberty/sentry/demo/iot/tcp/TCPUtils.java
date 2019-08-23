@@ -105,6 +105,14 @@ public class TCPUtils {
 				return "UP";
 			case S_PANSHIP_DOWN:
 				return "DWN";
+			case S_PANSHIP_LEFT_2:
+				return "L2FT";
+			case S_PANSHIP_RIGHT_2:
+				return "R2GT";
+			case S_PANSHIP_UP_2:
+				return "U2P";
+			case S_PANSHIP_DOWN_2:
+				return "D2WN";
 			default:
 				System.out.println("Should not reach here");
 		}
