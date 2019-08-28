@@ -61,6 +61,12 @@ public class IoTObject implements IoTConnection{
 			return ping();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			try {
+				disconnect();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				System.out.println("cannot event disconnect, consider restarting service");
+			}
 			return false;
 		}
 	}

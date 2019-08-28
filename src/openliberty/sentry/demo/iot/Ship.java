@@ -1,5 +1,6 @@
 package openliberty.sentry.demo.iot;
 
+import java.io.IOException;
 import java.net.InetAddress;
 
 import openliberty.sentry.demo.iot.tcp.TCPCommand;
@@ -83,6 +84,9 @@ public class Ship extends IoTObject{
 	
 	public void stopShip() throws Exception {
 		sendCommand(TCPCommand.T_GAMESTOP);
+	}
+	
+	public void disconnect() throws IOException {
 		disconnect();
 	}
 }
